@@ -1,4 +1,3 @@
 # UlamSpiral
 
-- A memory and performance efficient Ulam Spiral image creator
-- Made in C++
+A C++ based Ulam Spiral image creator made with memory usage and performance in mind
