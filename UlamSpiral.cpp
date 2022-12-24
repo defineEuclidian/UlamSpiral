@@ -29,13 +29,9 @@ int main()
 
 	// Set beginning time of operations
 	auto begin = std::chrono::high_resolution_clock::now();
-
-	// Initalize constants
+	
 	const long long int PRIMESIZE = SIZEBYSIZE * SIZEBYSIZE;
 	const long long int ACTUALPRIMESIZE = PRIMESIZE / 8 + 1;
-	const long long int SIZEMOD2 = SIZEBYSIZE % 2;
-	const long long int CENTERROW = SIZEBYSIZE / 2;
-	const long long int CENTERCOL = SIZEBYSIZE / 2 - 1 + SIZEMOD2;
 
 	std::cout << "\nBUILDING PRIME ARRAY\n";
 
@@ -99,38 +95,44 @@ int main()
 	// Width, Height
 	ostr << SIZEBYSIZE << " " << SIZEBYSIZE << "\n";
 
-	char* to_write = new char[SIZEBYSIZE];
+	const long long int SIZEMOD2 = SIZEBYSIZE % 2;
+	const long long int CENTERROW = SIZEBYSIZE / 2;
+	const long long int CENTERCOL = SIZEBYSIZE / 2 - 1 + SIZEMOD2;
+
+	char* ulam_segment = new char[SIZEBYSIZE];
 
 	for (long long int i = 0; i < SIZEBYSIZE; i++)
 	{
+		const long long int ROW_I = abs(i - CENTERROW);
+		const long long int DIFF_SIZE_I = SIZEBYSIZE - i;
+
 		for (long long int j = 0; j < SIZEBYSIZE; j++)
 		{
-			if (j < SIZEBYSIZE - i)
+			if (j < DIFF_SIZE_I)
 			{
-				const long long int ROW_I = abs(i - CENTERROW);
 				const long long int COL_J = abs(j - CENTERCOL);
 				const long long int DIST = ROW_I >= COL_J ? ROW_I : COL_J;
 				
 				const long long int NUM = 4 * DIST * DIST + SIZEMOD2 + i - j;
 
-				to_write[j] = 48 + decode_bit(primes[NUM / 8], NUM % 8);
+				ulam_segment[j] = 48 + decode_bit(primes[NUM / 8], NUM % 8);
 			}
 			else
 			{
-				const long long int ROW_I = abs(i - CENTERROW);
 				const long long int COL_J = abs(j - CENTERCOL - 1);
 				const long long int DIST = ROW_I >= COL_J ? ROW_I : COL_J;
 				
 				const long long int NUM = 4 * DIST * DIST + 4 * DIST + 2 - SIZEMOD2 + j - i;
 
-				to_write[j] = 48 + decode_bit(primes[NUM / 8], NUM % 8);
+				ulam_segment[j] = 48 + decode_bit(primes[NUM / 8], NUM % 8);
 			}
 		}
-		ostr.write(to_write, SIZEBYSIZE);
+
+		ostr.write(ulam_segment, SIZEBYSIZE);
 	}
 
-	delete[] to_write;
-	to_write = nullptr;
+	delete[] ulam_segment;
+	ulam_segment = nullptr;
 
 	ostr.close();
 
