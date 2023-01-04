@@ -62,7 +62,7 @@ int main()
 
 	while (curprime * curprime <= PRIMESIZE)
 	{
-		for (long long int i = curprime * 3; i <= PRIMESIZE; i += curprime * 2)
+		for (long long int i = curprime * curprime; i <= PRIMESIZE; i += curprime * 2)
 		{
 			set_bit_false(primes[i / 8], i % 8);
 		}
