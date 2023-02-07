@@ -29,15 +29,15 @@ int main()
 
 	// Set beginning time of operations
 	auto begin = std::chrono::high_resolution_clock::now();
-	
+
 	const long long int PRIMESIZE = SIZEBYSIZE * SIZEBYSIZE;
-	const long long int ACTUALPRIMESIZE = PRIMESIZE / 8 + 1;
+	const long long int ACTUALPRIMESIZE = PRIMESIZE / 16 + 1;
 
 	std::cout << "\nBUILDING PRIME ARRAY\n";
 
 	// Build dynamic array of unsigned char type integers whose bits indicate a prime number
 	// The location of a prime number bit in any unsigned char type integer within the primes array is floor(x / 8) for the integer itself, and x mod 8 for the bit
-	
+
 	unsigned char* primes = new unsigned char[ACTUALPRIMESIZE];
 
 	for (long long int i = 0; i < ACTUALPRIMESIZE; i++)
@@ -46,17 +46,10 @@ int main()
 	}
 
 	std::cout << "\nASSIGNING PRIMES INTO PRIME ARRAY\n";
-	
-	// Sieve Of Eratosthenes
-	// Efficient computation of all primes up to PRIMESIZE
-	
-	set_bit_false(primes[0], 0);
-	set_bit_false(primes[0], 1);
 
-	for (long long int i = 4; i <= PRIMESIZE; i += 2)
-	{
-		set_bit_false(primes[i / 8], i % 8);
-	}
+	// Sieve Of Eratosthenes
+
+	set_bit_false(primes[0], 0); // 1
 
 	long long int curprime = 3;
 
@@ -64,10 +57,10 @@ int main()
 	{
 		for (long long int i = curprime * curprime; i <= PRIMESIZE; i += curprime * 2)
 		{
-			set_bit_false(primes[i / 8], i % 8);
+			set_bit_false(primes[(i - 1) / 16], ((i - 1) / 2) % 8);
 		}
 		curprime += 2;
-		while (!decode_bit(primes[curprime / 8], curprime % 8))
+		while (!decode_bit(primes[(curprime - 1) / 16], ((curprime - 1) / 2) % 8))
 		{
 			curprime += 2;
 		}
@@ -100,32 +93,44 @@ int main()
 	const long long int CENTERCOL = SIZEBYSIZE / 2 - 1 + SIZEMOD2;
 
 	char* ulam_segment = new char[SIZEBYSIZE];
+	bool not_two = true;
 
 	for (long long int i = 0; i < SIZEBYSIZE; i++)
 	{
 		const long long int ROW_I = abs(i - CENTERROW);
 		const long long int DIFF_SIZE_I = SIZEBYSIZE - i;
 
-		for (long long int j = 0; j < SIZEBYSIZE; j++)
+		for (long long int j = (i + SIZEMOD2) % 2; j < SIZEBYSIZE; j += 2)
+		{
+			ulam_segment[j] = 48;
+		}
+
+		for (long long int j = (i + 1 - SIZEMOD2) % 2; j < SIZEBYSIZE; j += 2)
 		{
 			if (j < DIFF_SIZE_I)
 			{
 				const long long int COL_J = abs(j - CENTERCOL);
 				const long long int DIST = ROW_I >= COL_J ? ROW_I : COL_J;
-				
+
 				const long long int NUM = 4 * DIST * DIST + SIZEMOD2 + i - j;
 
-				ulam_segment[j] = 48 + decode_bit(primes[NUM / 8], NUM % 8);
+				ulam_segment[j] = 48 + decode_bit(primes[(NUM - 1) / 16], ((NUM - 1) / 2) % 8);
 			}
 			else
 			{
 				const long long int COL_J = abs(j - CENTERCOL - 1);
 				const long long int DIST = ROW_I >= COL_J ? ROW_I : COL_J;
-				
+
 				const long long int NUM = 4 * DIST * DIST + 4 * DIST + 2 - SIZEMOD2 + j - i;
 
-				ulam_segment[j] = 48 + decode_bit(primes[NUM / 8], NUM % 8);
+				ulam_segment[j] = 48 + decode_bit(primes[(NUM - 1) / 16], ((NUM - 1) / 2) % 8);
 			}
+		}
+
+		if (not_two && SIZEBYSIZE > 1 && i == CENTERROW)
+		{
+			ulam_segment[CENTERCOL + 1] = 49;
+			not_two = false;
 		}
 
 		ostr.write(ulam_segment, SIZEBYSIZE);
