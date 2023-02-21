@@ -57,10 +57,10 @@ int main()
 	{
 		for (long long int i = curprime * curprime; i <= PRIMESIZE; i += curprime * 2)
 		{
-			set_bit_false(primes[(i - 1) / 16], ((i - 1) / 2) % 8);
+			set_bit_false(primes[i / 16], ((i - 1) / 2) % 8);
 		}
 		curprime += 2;
-		while (!decode_bit(primes[(curprime - 1) / 16], ((curprime - 1) / 2) % 8))
+		while (!decode_bit(primes[curprime / 16], ((curprime - 1) / 2) % 8))
 		{
 			curprime += 2;
 		}
@@ -114,7 +114,7 @@ int main()
 
 				const long long int NUM = 4 * DIST * DIST + SIZEMOD2 + i - j;
 
-				ulam_segment[j] = 48 + decode_bit(primes[(NUM - 1) / 16], ((NUM - 1) / 2) % 8);
+				ulam_segment[j] = 48 + decode_bit(primes[NUM / 16], ((NUM - 1) / 2) % 8);
 			}
 			else
 			{
@@ -123,7 +123,7 @@ int main()
 
 				const long long int NUM = 4 * DIST * DIST + 4 * DIST + 2 - SIZEMOD2 + j - i;
 
-				ulam_segment[j] = 48 + decode_bit(primes[(NUM - 1) / 16], ((NUM - 1) / 2) % 8);
+				ulam_segment[j] = 48 + decode_bit(primes[NUM / 16], ((NUM - 1) / 2) % 8);
 			}
 		}
 
